@@ -1,5 +1,6 @@
-package juja.microservices.gamification.slackbot.dao;
+package juja.microservices.gamification.slackbot.dao.impl;
 
+import juja.microservices.gamification.slackbot.dao.GamificationRepository;
 import juja.microservices.gamification.slackbot.exceptions.GamificationExchangeException;
 
 import juja.microservices.gamification.slackbot.model.*;
