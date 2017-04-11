@@ -90,9 +90,8 @@ public class GamificationSlackCommandController {
             return getRichMessageInvalidSlackCommand();
         }
         String fromUserUuid = userService.findUuidUserBySlack(fromUser);
-
-        ThanksAchievement thanks = new ThanksAchievement(fromUserUuid, text);
-
+        String preparedTextWithUuid = slackNameHandlerService.replaceSlackNamesToUuids(text);
+        ThanksAchievement thanks = new ThanksAchievement(fromUserUuid, preparedTextWithUuid);
         return new RichMessage(gamificationService.sendThanksAchievement(thanks));
     }
 

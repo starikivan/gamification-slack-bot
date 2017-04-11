@@ -1,27 +1,35 @@
 package juja.microservices.gamification.slackbot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import juja.microservices.gamification.slackbot.exceptions.WrongCommandFormatException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Vitalii Viazovoi
  */
 @Getter
 @Setter
-@ToString
-//@JsonIgnoreProperties({"parcedUuidPattern", "parcedUuidStartMarker",
-//        "parcedUuidFinishMarker", "command_EXAMPLE"})
+@JsonIgnoreProperties({"parcedUuidPattern", "parcedUuidStartMarker",
+        "parcedUuidFinishMarker", "PARCED_UUID_PATTERN_WITH_MARKERS", "COMMAND_EXAMPLE", "ONE_UUID"})
 public class ThanksAchievement {
     private String from;
     private String to;
     private String description;
 
+    @Value("${parcedUuid.pattern}")
     private String parcedUuidPattern = "@#([a-zA-z0-9\\.\\_\\-]){1,21}#@";
-    private String parcedUuidStartMarker = "@#";
+    @Value("${parcedUuid.startMarker}")
+    private String parcedUuidStartMarker  = "@#";
+    @Value("${parcedUuid.finishMarker}")
     private String parcedUuidFinishMarker = "#@";
-    private final String COMMAND_EXAMPLE = "/thanks Thanks to @slack_nick_name for bla bla blabl abl. Blabla bla blabl.";
+    private final String COMMAND_EXAMPLE = "/thanks Thanks to @slack_nick_name for help.";
+    private static final int ONE_UUID = 1;
 
     public ThanksAchievement(String from, String to, String description) {
         this.from = from;
@@ -32,10 +40,31 @@ public class ThanksAchievement {
     public ThanksAchievement(String fromUserUuid, String text) {
         this.from = fromUserUuid;
         this.to = findUuid(text);
-        this.description = text;
+        this.description = text.replaceAll(parcedUuidStartMarker,"").replaceAll(parcedUuidFinishMarker,"");
+    }
+
+    @Override
+    public String toString() {
+        return "ThanksAchievement{" +
+                "from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", description='" + description + "'}";
     }
 
     private String findUuid(String text) {
-        return text.replaceAll("^.+@#","").replaceAll("#@.+$","");
+        Pattern pattern = Pattern.compile(parcedUuidPattern);
+        Matcher matcher = pattern.matcher(text);
+        String uuid;
+        if (matcher.find()) {
+            uuid = matcher.group();
+            if (matcher.find()) {
+                throw new WrongCommandFormatException(String.format("Wrong command. Example for this command %s",
+                        COMMAND_EXAMPLE));
+            }
+        } else {
+            throw new WrongCommandFormatException(String.format("Wrong command. Example for this command %s",
+                    COMMAND_EXAMPLE));
+        }
+        return uuid.replaceAll(parcedUuidStartMarker,"").replaceAll(parcedUuidFinishMarker,"");
     }
 }
