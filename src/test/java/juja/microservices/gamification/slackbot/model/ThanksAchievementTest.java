@@ -3,12 +3,13 @@ package juja.microservices.gamification.slackbot.model;
 import juja.microservices.gamification.slackbot.exceptions.WrongCommandFormatException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-//@RunWith(SpringRunner.class)
-//@TestPropertySource(value="classpath:/resources/application.properties")
 public class ThanksAchievementTest {
 
     private ThanksAchievement expectedAchievement;

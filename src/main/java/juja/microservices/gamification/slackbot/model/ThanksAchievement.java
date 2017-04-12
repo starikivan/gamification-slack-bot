@@ -16,20 +16,16 @@ import java.util.regex.Pattern;
 @Getter
 @Setter
 @JsonIgnoreProperties({"parcedUuidPattern", "parcedUuidStartMarker",
-        "parcedUuidFinishMarker", "PARCED_UUID_PATTERN_WITH_MARKERS", "COMMAND_EXAMPLE", "ONE_UUID"})
+        "parcedUuidFinishMarker", "PARCED_UUID_PATTERN_WITH_MARKERS", "command_EXAMPLE", "ONE_UUID"})
 public class ThanksAchievement {
     private String from;
     private String to;
     private String description;
 
-    @Value("${parcedUuid.pattern}")
-    private String parcedUuidPattern = "@#([a-zA-z0-9\\.\\_\\-]){1,21}#@";
-    @Value("${parcedUuid.startMarker}")
-    private String parcedUuidStartMarker  = "@#";
-    @Value("${parcedUuid.finishMarker}")
-    private String parcedUuidFinishMarker = "#@";
+    private static final String parcedUuidPattern = "@#([a-zA-z0-9\\.\\_\\-]){1,21}#@";
+    private static final String parcedUuidStartMarker  = "@#";
+    private static final String parcedUuidFinishMarker = "#@";
     private final String COMMAND_EXAMPLE = "/thanks Thanks to @slack_nick_name for help.";
-    private static final int ONE_UUID = 1;
 
     public ThanksAchievement(String from, String to, String description) {
         this.from = from;
